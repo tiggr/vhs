@@ -48,6 +48,11 @@ class PageSelectService implements SingletonInterface {
 	protected static $pageSelect;
 
 	/**
+	 * @var \TYPO3\CMS\Core\Cache\Cache
+	 */
+	protected static $cache;
+
+	/**
 	 * @var array
 	 */
 	protected static $cachedPages = array();
@@ -72,6 +77,7 @@ class PageSelectService implements SingletonInterface {
 	 */
 	public function initializeObject() {
 		self::$pageSelect = $this->createPageSelectInstance();
+		self::$cache = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('vhs_menus');
 	}
 
 	/**
@@ -108,10 +114,10 @@ class PageSelectService implements SingletonInterface {
 		if (NULL === $pageUid) {
 			$pageUid = $GLOBALS['TSFE']->id;
 		}
-		if (FALSE === isset(self::$cachedPages[$pageUid])) {
-			self::$cachedPages[$pageUid] = self::$pageSelect->getPage($pageUid);
+		if (FALSE === self::$cache->get('p' . $pageUid)) {
+			self::$cache->set('p' . $pageUid, self::$pageSelect->getPage($pageUid));
 		}
-		return self::$cachedPages[$pageUid];
+		return self::$cache->get('p' . $pageUid);
 	}
 
 	/**
@@ -123,10 +129,10 @@ class PageSelectService implements SingletonInterface {
 	 */
 	public function getPageOverlay($pageInput, $languageUid = -1) {
 		$key = md5(serialize($pageInput) . $languageUid);
-		if (FALSE === isset(self::$cachedOverlays[$key])) {
-			self::$cachedOverlays[$key] = self::$pageSelect->getPageOverlay($pageInput, $languageUid);
+		if (FALSE === self::$cache->get('o' . $key)) {
+			self::$cache->set('o' . $key, self::$pageSelect->getPageOverlay($pageInput, $languageUid));
 		}
-		return self::$cachedOverlays[$key];
+		return self::$cache->get('o' . $key);
 	}
 
 	/**
@@ -161,10 +167,10 @@ class PageSelectService implements SingletonInterface {
 			$addWhere = $where . ' ' . $addWhere;
 		}
 		$key = md5(intval($showHiddenInMenu) . $pageUid . $addWhere . intval($checkShortcuts));
-		if (FALSE === isset(self::$cachedMenus[$key])) {
-			self::$cachedMenus[$key] = self::$pageSelect->getMenu($pageUid, '*', 'sorting', $addWhere, $checkShortcuts);
+		if (FALSE === self::$cache->get('m' . $key)) {
+			self::$cache->set('m' . $key, self::$pageSelect->getMenu($pageUid, '*', 'sorting', $addWhere, $checkShortcuts));
 		}
-		return self::$cachedMenus[$key];
+		return self::$cache->get('m' . $key);
 	}
 
 	/**
@@ -186,14 +192,14 @@ class PageSelectService implements SingletonInterface {
 			}
 		}
 		$key = md5($pageUid . $MP . (string) $reverse);
-		if (FALSE === isset(self::$cachedRootLines[$key])) {
+		if (FALSE === self::$cache->get('r' . $key)) {
 			$rootLine = self::$pageSelect->getRootLine($pageUid, $MP);
 			if (TRUE === $reverse) {
 				$rootLine = array_reverse($rootLine);
 			}
-			self::$cachedRootLines[$key] = $rootLine;
+			self::$cache->set('r' . $key, $rootLine);
 		}
-		return self::$cachedRootLines[$key];
+		return self::$cache->get('r' . $key);
 	}
 
 	/**

@@ -27,3 +27,12 @@ if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfi
 		'groups' => array('pages', 'all')
 	);
 }
+
+if (FALSE === is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['vhs_menus'])) {
+	$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['vhs_menus'] = array(
+		'backend' => 'TYPO3\CMS\Core\Cache\Backend\MemcachedBackend',
+		'options' => array(
+			'servers' => array('localhost:11211'),
+		)
+	);
+}

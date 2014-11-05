@@ -202,3 +202,22 @@ CREATE TABLE IF NOT EXISTS  `cf_vhs_markdown_tags` (
   KEY `cache_id` (`identifier`),
   KEY `cache_tag` (`tag`)
 ) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS  `cf_vhs_menus` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(250) NOT NULL DEFAULT '',
+  `expires` int(11) unsigned NOT NULL DEFAULT '0',
+  `content` mediumblob,
+  PRIMARY KEY (`id`),
+  KEY `cache_id` (`identifier`,`expires`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS  `cf_vhs_menus_tags` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(250) NOT NULL DEFAULT '',
+  `tag` varchar(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `cache_id` (`identifier`),
+  KEY `cache_tag` (`tag`)
+) ENGINE=InnoDB;
