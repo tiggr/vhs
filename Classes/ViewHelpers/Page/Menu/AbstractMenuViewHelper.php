@@ -548,9 +548,9 @@ abstract class AbstractMenuViewHelper extends AbstractTagBasedViewHelper {
 			if (TRUE === $isSpacer || (TRUE === $isCurrent && FALSE === $linkCurrent) || (TRUE === $isActive && FALSE === $linkActive)) {
 				$html[] = htmlspecialchars($page['linktext']);
 			} elseif (TRUE === $includeAnchorTitle) {
-				$html[] = sprintf('<a href="%s" title="%s"%s%s>%s</a>', $page['link'], htmlspecialchars($page['title']), $class, $target, htmlspecialchars($page['linktext']));
+				$html[] = sprintf('<a href="%s" title="%s"%s%s%s>%s</a>', $page['link'], htmlspecialchars($page['title']), $class, $target, ' data-uid="' . $page['uid'] . '"', htmlspecialchars($page['linktext']));
 			} else {
-				$html[] = sprintf('<a href="%s"%s%s>%s</a>', $page['link'], $class, $target, htmlspecialchars($page['linktext']));
+				$html[] = sprintf('<a href="%s"%s%s%s>%s</a>', $page['link'], $class, $target, ' data-uid="' . $page['uid'] . '"', htmlspecialchars($page['linktext']));
 			}
 			if ((TRUE === (boolean) $page['active'] || TRUE === $expandAll) && TRUE === (boolean) $page['hasSubPages'] && $level < $maxLevels) {
 				$pageUid = (TRUE === isset($page['mountedPageUid'])) ? $page['mountedPageUid'] : $page['uid'];
